@@ -1,0 +1,31 @@
+﻿@model RareForum.Models.Comment
+@{
+    ViewData["Title"] = "Delete Comment";
+}
+
+<div class="d-flex flex-row justify-content-center align-items-stretch pt-3">
+    <div class="card profile-picture m-3 me-md-3 mb-md-0 mt-md-0 bg-body-tertiary shadow w-400-px border-danger">
+        <div class="card-header text-center bg-danger-subtle">
+            Are you sure?!?
+        </div>
+        <div class="card-body">
+            <form asp-action="DeleteComment">
+                <div class="row">
+                    <div class="col text-center">
+                        Are you sure you want to delete your comment??? <br/>
+                        There are no going back from this action after you click the button below!
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <a asp-controller="Posts" asp-action="Index" asp-route-categoryId="@ViewBag.CategoryId" asp-route-id="@Model.PostId" class="btn btn-primary">Go back</a>
+                    </div>
+                    <div class="col d-flex justify-content-end">
+                        <input type="submit" class="btn btn-danger" value="DELETE COMMENT!"/>
+                    </div>
+                </div>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            </form>
+        </div>
+    </div>
+</div>

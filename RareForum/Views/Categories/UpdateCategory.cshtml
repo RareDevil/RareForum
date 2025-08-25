@@ -1,0 +1,81 @@
+@model RareForum.Models.Category
+@{
+    ViewData["Title"] = "UpdateCategory";
+}
+
+
+<div class="d-flex flex-md-row justify-content-center flex-column align-items-stretch align-items-md-start pt-3">
+    <div class="card profile-picture m-3 me-md-3 mb-md-0 mt-md-0 bg-body-tertiary shadow w-400-px">
+        <div class="card-header text-center">
+            Edit category
+        </div>
+        <div class="card-body">
+            <form asp-action="UpdateCategory">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="Title" type="text" class="form-control" id="TitleInput"
+                                   placeholder="Title">
+                            <label asp-for="Title" for="TitleInput">Title</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <textarea asp-for="Description" class="form-control" placeholder="Write a description here"
+                                      id="DescriptionTextarea" style="height: 100px; resize: none;"></textarea>
+                            <label for="DescriptionTextarea">Description</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        @if (Model.ParentCategoryId == null)
+                        {
+                            <a asp-controller="Categories" asp-action="Index" class="btn btn-primary">Go back</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Categories" asp-action="Category" asp-route-id="@Model.ParentCategoryId" class="btn btn-primary">Go back</a>
+                        }
+                    </div>
+                    <div class="col d-flex justify-content-end">
+                        <input type="submit" class="btn btn-success" value="Update category"/>
+                    </div>
+                </div>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            </form>
+        </div>
+    </div>
+</div>
+@* Lets do some hacking *@
+<div style="display: none;">
+    <span asp-validation-for="Title"></span>
+    <span asp-validation-for="Description"></span>
+</div>
+<script>
+    let warningTimer;
+    $("textarea").keydown(function(e){
+        // Enter was pressed
+        if (e.keyCode === 13)
+        {
+            // prevent default behavior
+            e.preventDefault();
+
+            const popover = new bootstrap.Popover(e.currentTarget, {
+                placement: 'left',
+                content: "You are not allowed to make new lines in the description.",
+                trigger: 'manual',
+                customClass: 'custom-error-popover'
+            });
+            popover.show();
+
+            clearTimeout(warningTimer);
+            warningTimer = setTimeout(() => {
+                popover.hide();
+            }, 15000);
+        }
+    });
+
+</script>

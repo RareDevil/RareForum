@@ -1,0 +1,88 @@
+@model RareForum.Models.Post
+@inject RareForum.Static.CAuth Auth
+@using Westwind.AspNetCore.Markdown
+@{
+    ViewData["Title"] = "Post";
+}
+<div class="container py-3">
+    <div class="forum-container">
+        <div class="header">
+            <div class="post">
+                @Model.Title
+            </div>
+            <div>
+                <a asp-controller="Categories" asp-action="Category" asp-route-id="@Model.CategoryId"
+                   class="btn btn-success">Back to categories</a>
+            </div>
+        </div>
+        <div class="items-container">
+            <div class="item-container post">
+                <div class="item postprofile">
+                    <div class="profile-image">
+                        <img src="@Url.Action("ProfileImage", "Auth", new { userId = Model.UserId })" alt="Profile image">
+                    </div>
+                    <p>@Html.DisplayFor(modelItem => modelItem.Author!.Username)</p>
+                    <p class="post-count">@Model.Author!.Posts.Count() posts</p>
+                </div>
+                <div class="item postcontent">
+                    <div class="header">
+                        <div class="d-flex align-items-center">
+                            <svg width="16" height="16" fill="currentColor">
+                                <use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#calendar"/>
+                            </svg>
+                            <span class="ms-2">@Model.CreatedDate!.Value.ToShortDateString()</span>
+                        </div>
+                        @if (Auth.Autherized && @Model.UserId == Auth.User!.UserId)
+                        {
+                            <div>
+                                <a asp-action="UpdatePost" asp-route-categoryId="@Model.CategoryId"
+                                   asp-route-id="@Model.PostId" class="btn btn-primary btn-sm">Edit</a>
+                                <a asp-action="DeletePost" asp-route-categoryId="@Model.CategoryId"
+                                   asp-route-id="@Model.PostId" type="button" class="btn btn-danger btn-sm">Delete</a>
+                            </div>
+                        }
+                    </div>
+                    <div class="content">
+                        @Markdown.ParseHtmlString(@Model.Content)
+                    </div>
+                    @if (!String.IsNullOrWhiteSpace(Model.Author.Signature))
+                    {
+                        <div class="signature">
+                            @Markdown.ParseHtmlString(@Model.Author.Signature)
+                        </div>
+                    }
+                </div>
+            </div>
+            @if (Model.Comments.Any())
+            {
+                @foreach (Comment item in Model.Comments)
+                {
+                    @await Html.PartialAsync("../Comments/_Comment", item, new ViewDataDictionary(ViewData)
+                    {
+                        {
+                            "CategoryId", Model.CategoryId
+                        }
+                    })
+                }
+            }
+            else
+            {
+                <div class="no-items-container">
+                    <p class="fs-2">No comments found</p>
+                </div>
+            }
+            @if (Auth.Autherized)
+            {
+                @await Html.PartialAsync("../Comments/_CreateComment", new Comment()
+                {
+                    PostId = Model.PostId,
+                }, new ViewDataDictionary(ViewData)
+                {
+                    {
+                        "CategoryId", Model.CategoryId
+                    }
+                })
+            }
+        </div>
+    </div>
+</div>

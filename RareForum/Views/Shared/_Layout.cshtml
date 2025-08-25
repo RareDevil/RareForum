@@ -1,0 +1,142 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using RareForum.Static
+@inject CAuth Auth;
+<!DOCTYPE html>
+<html lang="en" class="h-100"  data-bs-theme="dark">
+<head>
+    <script src="~/js/color-modes.js"></script>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>RareForum - @ViewData["Title"]</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css"/>
+    <link rel="stylesheet" href="~/lib/easymde/easymde.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/RareForum.styles.css" asp-append-version="true"/>
+    @* Normally i would load this last, but since i need jquery inside my pages i need to load this sooner *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/easymde/easymde.min.js"></script>
+</head>
+<body class="d-flex flex-column h-100">
+@if (Auth.Autherized)
+{
+    <div class="modal fade" id="LogoutConfirmationModal" tabindex="-1" aria-labelledby="LogoutConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="LogoutConfirmationModalLabel">Are you sure???</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure sure that you want to logout?<br/>
+                    If you logout you will not be able to write any messages!
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NOOOO, i want to stay.</button>
+                    <a class="btn btn-danger" asp-area="" asp-controller="Auth" asp-action="Logout">YES, i want to leave.</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<header class="main border-bottom bg-secondary-subtle">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">RareForum</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Categories" asp-action="Index">Forum</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="About">About</a>
+                    </li>
+
+                </ul>
+                <ul class="navbar-nav justify-content-end">
+                    @if (Auth.Autherized)
+                    {
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary" asp-area="" asp-controller="Auth" asp-action="Index">Profile</a>
+                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#LogoutConfirmationModal">
+                                Logout
+                            </button>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary" asp-area="" asp-controller="Auth" asp-action="Login">Login</a>
+                            
+                            <a class="btn btn-outline-success" asp-area="" asp-controller="Auth" asp-action="Register">Register</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main role="main" class="d-flex flex-column"> @* class="pb-3 pt-3" *@
+    @RenderBody()
+</main>
+
+<footer class="border-top footer text-muted align-items-center bg-secondary-subtle main">
+    <div class="container">
+        &copy; 2025 - RareForum -
+        <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </div>
+    @* Theme selector *@
+    <div class="dropdown position-fixed bottom-0 end-0 mb-2 me-2 bd-mode-toggle">
+        <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
+                id="bd-theme"
+                type="button"
+                aria-expanded="false"
+                data-bs-toggle="dropdown"
+                aria-label="Toggle theme (auto)">
+            <svg class="bi my-1 theme-icon-active" width="1em" height="1em">
+                <use href="/lib/bootstrap-icons/bootstrap-icons.svg#circle-half"></use></svg>
+            <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
+            <li>
+                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+                    <svg class="bi me-2 opacity-50" width="1em" height="1em">
+                        <use href="/lib/bootstrap-icons/bootstrap-icons.svg#sun-fill"></use></svg>
+                    Light
+                    <svg class="bi ms-auto d-none" width="1em" height="1em">
+                        <use href="/lib/bootstrap-icons/bootstrap-icons.svg#check2"></use></svg>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+                    <svg class="bi me-2 opacity-50" width="1em" height="1em">
+                        <use href="/lib/bootstrap-icons/bootstrap-icons.svg#moon-stars-fill"></use></svg>
+                    Dark
+                    <svg class="bi ms-auto d-none" width="1em" height="1em">
+                        <use href="/lib/bootstrap-icons/bootstrap-icons.svg#check2"></use></svg>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
+                    <svg class="bi me-2 opacity-50" width="1em" height="1em">
+                        <use href="/lib/bootstrap-icons/bootstrap-icons.svg#circle-half"></use></svg>
+                    Auto
+                    <svg class="bi ms-auto d-none" width="1em" height="1em">
+                        <use href="/lib/bootstrap-icons/bootstrap-icons.svg#check2"></use></svg>
+                </button>
+            </li>
+        </ul>
+    </div>
+</footer>
+
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

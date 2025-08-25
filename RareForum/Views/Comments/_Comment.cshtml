@@ -1,0 +1,49 @@
+﻿@model RareForum.Models.Comment
+@inject RareForum.Static.CAuth Auth
+@using Westwind.AspNetCore.Markdown
+
+<div class="item-container post">
+    <div class="item postprofile">
+        <div class="profile-image">
+            <img src="@Url.Action("ProfileImage", "Auth", new { userId = Model.UserId })" alt="Profile image">
+        </div>
+        <p>@Html.DisplayFor(modelItem => modelItem.Author!.Username)</p>
+        <p class="post-count">@Model.Author!.Posts.Count() posts</p>
+    </div>
+    <div class="item postcontent">
+        <div class="header">
+            <div class="d-flex align-items-center">
+                <svg width="16" height="16" fill="currentColor">
+                    <use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#calendar"/>
+                </svg>
+                <span class="ms-2">@Model.CreatedDate!.Value.ToShortDateString()</span>
+            </div>
+            @if (Auth.Autherized && Model.UserId == Auth.User!.UserId)
+            {
+                <div>
+                    <a asp-action="UpdateComment" 
+                       asp-controller="Comments"
+                       asp-route-categoryId="@ViewBag.CategoryId" 
+                       asp-route-postId="@Model.PostId" 
+                       asp-route-id="@Model.CommentId"
+                       class="btn btn-primary btn-sm">Edit</a>
+                    <a asp-action="DeleteComment"
+                       asp-controller="Comments"
+                       asp-route-categoryId="@ViewBag.CategoryId"
+                       asp-route-postId="@Model.PostId"
+                       asp-route-id="@Model.CommentId"
+                       class="btn btn-danger btn-sm">Delete</a>
+                </div>
+            }
+        </div>
+        <div class="content">
+            @Markdown.ParseHtmlString(@Model.Content)
+        </div>
+        @if (!String.IsNullOrWhiteSpace(Model.Author.Signature))
+        {
+            <div class="signature">
+                @Markdown.ParseHtmlString(@Model.Author.Signature)
+            </div>
+        }
+    </div>
+</div>

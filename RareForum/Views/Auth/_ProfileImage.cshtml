@@ -1,0 +1,42 @@
+﻿@model RareForum.Models.UserImageUpload
+
+<div class="card profile-picture m-3 me-md-3 mb-md-0 mt-md-0 bg-body-tertiary shadow">
+    <div class="card-header">
+        Profile picture
+    </div>
+    <div class="card-body d-flex flex-column align-items-center">
+        <div class="profile-image">
+            <img src="@Url.Action("ProfileImage", "Auth", new { userId = ViewBag.UserId })" alt="Profile image" id="image" />
+        </div>
+        <p class="fs-7 mt-2">JPG or PNG no larger than 1mb</p>
+        <form asp-controller="Auth" 
+              asp-action="ProfileImageUpload"
+              method="post" enctype="multipart/form-data">
+            <input asp-for="Image" type="file" id="ImageInput" style="display:none">
+            <input class="btn btn-primary" type="submit" value="Upload new image" id="imageUploadButton" disabled />
+        </form>
+    </div>
+</div>
+
+<script>
+    $(".profile-image").on( "click", function() {
+        $("#ImageInput").trigger( "click" );
+    });
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('img#image').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#ImageInput").change(function(){
+        readURL(this);
+        $("#imageUploadButton").prop("disabled",false);
+    });
+</script>

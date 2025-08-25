@@ -1,0 +1,78 @@
+@model IEnumerable<RareForum.Models.Category>
+@inject RareForum.Static.CAuth Auth;
+
+@{
+    ViewData["Title"] = "Forum";
+}
+@* This page will not allow posts to be created! *@
+<div class="container py-3">
+    <h1 class="text-center mb-3">Forum</h1>
+    <div class="forum-container">
+        <div class="header">
+            <div>
+                Categories
+            </div>
+            @if (Auth.Autherized)
+            {
+                <div>
+                    <a asp-action="CreateCategory" class="btn btn-primary">Create new category</a>
+                </div>
+            }
+        </div>
+        @if (Model.Any())
+        {
+            <div class="items-container">
+                @foreach (Category item in Model)
+                {
+                    <div class="item-container">
+                        <div class="item icon">
+                            <svg width="32" height="32" fill="currentColor">
+                                <use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#list"/>
+                            </svg>
+                        </div>
+                        <div class="item info">
+                            <a asp-action="Category" asp-route-id="@item.CategoryId">
+                                <p class="title">@Html.DisplayFor(modelItem => item.Title)</p>
+                                <p class="description">@Html.DisplayFor(modelItem => item.Description)</p>
+                            </a>
+                        </div>
+                        @if (item.UserId == Auth.User?.UserId)
+                        {
+                            <div class="item actions">
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <svg width="32" height="32" fill="currentColor">
+                                            <use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#list"/>
+                                        </svg>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" asp-action="UpdateCategory" asp-route-id="@item.CategoryId">Edit</a></li>
+                                        <li><a class="dropdown-item" asp-action="DeleteCategory" asp-route-id="@item.CategoryId">Delete</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        }
+                        <div class="item count">
+                            <p>@Html.DisplayFor(modelItem => item.ChildCategories.Count)</p>
+                            <p>Categories</p>
+                        </div>
+                        <div class="item count">
+                            <p>@Html.DisplayFor(modelItem => item.Posts.Count)</p>
+                            <p>Posts</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="no-items-container">
+                <p class="fs-2">No categories found</p>
+                @if (Auth.Autherized)
+                {
+                    <a class="fs-5" asp-action="CreateCategory">Create new category</a>
+                }
+            </div>
+        }
+    </div>
+</div>

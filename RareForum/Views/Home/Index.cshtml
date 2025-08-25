@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject RareForum.Static.CAuth Auth;
+@model IEnumerable<RareForum.Models.Post>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<section class="py-4 text-center container">
+    <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">Welcome to RareForum</h1>
+            <p class="lead text-body-secondary">
+                Feel free to look around. 
+            </p>
+            @if (!Auth.Autherized)
+            {
+                <p>
+                    <a asp-area="" asp-controller="Auth" asp-action="Login" class="btn btn-primary my-2">Login</a>
+                    <a asp-area="" asp-controller="Auth" asp-action="Register" class="btn btn-success my-2">Register</a>
+                </p>
+            }
+        </div>
+    </div>
+</section>
+<div class="py-5 bg-body-tertiary flex-grow-1">
+    <div class="container">
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            @* @for (int i = 0; i < 9; i++) *@
+            @foreach(Post post in Model)
+            {
+                @await Html.PartialAsync("_Post", post)
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+﻿@model RareForum.Models.Comment
+
+<div class="new-comment-container">
+    <form 
+        asp-action="CreateComment" 
+        asp-controller="Comments"
+        asp-route-categoryId="@ViewBag.CategoryId"
+        asp-route-postId="@Model.PostId"
+        method="post">
+        <div class="row">
+            <div class="col text-center">
+                <p>Write a new comment</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <textarea asp-for="Content" class="form-control" id="easyMDE"></textarea>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col d-flex justify-content-end">
+                <input type="submit" class="btn btn-success" id="CreateComment" value="Create comment" disabled />
+            </div>
+        </div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    </form>
+</div>
+<script>
+    function debounce(func, timeout = 500){
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        };
+    }
+    
+    const easyMDE = new EasyMDE({
+        maxHeight: "100px",
+        styleSelectedText: false,
+        spellChecker: false,
+        status: false,
+        renderingConfig: {
+            singleLineBreaks: false, // this is how it is parsed with the parser!
+        }
+    });
+    easyMDE.codemirror.on("change", () => {
+        debounce(() => {
+            document.getElementById("CreateComment").disabled = easyMDE.value() === "";
+        })();
+    });
+
+</script>

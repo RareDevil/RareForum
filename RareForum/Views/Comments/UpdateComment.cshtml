@@ -1,0 +1,47 @@
+@model RareForum.Models.Comment
+@{
+    ViewData["Title"] = "Update Comment";
+}
+<div class="d-flex flex-md-row justify-content-center flex-column align-items-stretch align-items-md-start pt-3">
+    <div class="card profile-picture m-3 me-md-3 mb-md-0 mt-md-0 bg-body-tertiary shadow w-50">
+        <div class="card-header text-center">
+            Update comment
+        </div>
+        <div class="card-body">
+            <form action method="post">
+                <div class="row">
+                    <div class="col">
+                        <textarea asp-for="Content" class="form-control" id="easyMDE"></textarea>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <a asp-action="Index"
+                           asp-controller="Posts"
+                           asp-route-categoryId="@ViewBag.CategoryId" 
+                           asp-route-id="@Model.PostId" 
+                           class="btn btn-primary">Go back</a>
+                    </div>
+                    <div class="col d-flex justify-content-end">
+                        <input type="submit" class="btn btn-success" value="Update comment"/>
+                    </div>
+                </div>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            </form>
+        </div>
+    </div>
+</div>
+@* Lets do some hacking *@
+<div style="display: none;">
+    <span asp-validation-for="Content"></span>
+</div>
+<script>
+    const easyMDE = new EasyMDE({
+        styleSelectedText: false,
+        spellChecker: false,
+        status: false,
+        renderingConfig: {
+            singleLineBreaks: false, // this is how it is parsed with the parser!
+        }
+    });
+</script>

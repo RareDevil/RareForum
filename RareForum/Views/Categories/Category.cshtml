@@ -1,0 +1,141 @@
+@model RareForum.Models.Category
+@inject RareForum.Static.CAuth Auth;
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container py-3">
+    <h1 class="text-center mb-1">@Html.DisplayFor(modelItem => modelItem.Title)</h1>
+    <p class="text-center mb-3">@Html.DisplayFor(modelItem => modelItem.Description)</p>
+    <div class="forum-container">
+        <div class="header">
+            <div>
+                Categories
+            </div>
+            <div>
+                @if (Model.ParentCategoryId == null)
+                {
+                    <a asp-controller="Categories" asp-action="Index" class="btn btn-success">Back to parent</a>
+                }
+                else
+                {
+                    <a asp-controller="Categories" asp-action="Category" asp-route-id="@Model.ParentCategoryId" class="btn btn-success">Back to parent</a>
+                }
+                
+                @if (Auth.Autherized)
+                {
+                    <a asp-action="CreateCategoryWithParentId" asp-route-id="@Model.CategoryId" class="btn btn-primary">Create
+                        new category</a>
+                }
+            </div>
+        </div>
+        @if (Model.ChildCategories.Any())
+        {
+            <div class="items-container">
+                @foreach (Category item in Model.ChildCategories)
+                {
+                    <div class="item-container">
+                        <div class="item icon">
+                            <svg width="32" height="32" fill="currentColor">
+                                <use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#card-list"/>
+                            </svg>
+                        </div>
+                        <div class="item info">
+                            <a asp-action="Category" asp-route-id="@item.CategoryId">
+                                <p class="title">@Html.DisplayFor(modelItem => item.Title)</p>
+                                <p class="description">@Html.DisplayFor(modelItem => item.Description)</p>
+                            </a>
+                        </div>
+                        @if (item.UserId == Auth.User?.UserId)
+                        {
+                            <div class="item actions">
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary btn-sm" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                        <svg width="32" height="32" fill="currentColor">
+                                            <use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#list"/>
+                                        </svg>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" asp-action="UpdateCategory" asp-route-id="@item.CategoryId">Edit</a></li>
+                                        <li><a class="dropdown-item" asp-action="DeleteCategory" asp-route-id="@item.CategoryId">Delete</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        }
+                        <div class="item count">
+                            <p>@Html.DisplayFor(modelItem => item.ChildCategories.Count)</p>
+                            <p>Categories</p>
+                        </div>
+                        <div class="item count">
+                            <p>@Html.DisplayFor(modelItem => item.Posts.Count)</p>
+                            <p>Posts</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="no-items-container">
+                <p class="fs-2">No categories found</p>
+                @if (Auth.Autherized)
+                {
+                    <a class="fs-5" asp-action="CreateCategoryWithParentId" asp-route-id="@Model.CategoryId">Create new
+                        category</a>
+                }
+            </div>
+        }
+    </div>
+    <div class="forum-container">
+        <div class="header">
+            <div>
+                Posts
+            </div>
+            @if (Auth.Autherized)
+            {
+                <div>
+                    <a asp-action="CreatePost" asp-controller="Posts" asp-route-categoryId="@Model.CategoryId" class="btn btn-primary">Create new post</a>
+                </div>
+            }
+        </div>
+        @if (Model.Posts.Any())
+        {
+            <div class="items-container">
+                @foreach (Post item in Model.Posts)
+                {
+                    <div class="item-container">
+                        <div class="item icon">
+                            <svg width="32" height="32" fill="currentColor">
+                                <use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#chat-text"/>
+                            </svg>
+                        </div>
+                        <div class="item info post">
+                            <a asp-action="Index" asp-controller="Posts" asp-route-categoryId="@item.CategoryId" asp-route-id="@item.PostId">
+                                <p class="title">@Html.DisplayFor(modelItem => item.Title)</p>
+                            </a>
+                        </div>
+                        <div class="item count">
+                            <p>@Html.DisplayFor(modelItem => item.Comments.Count)</p>
+                            <p>Comments</p>
+                        </div>
+                        <div class="item dateAuthor">
+                            <p>@Html.DisplayFor(modelItem => item.Author!.Username)</p>
+                            <p>@item.CreatedDate!.Value.ToShortDateString()</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="no-items-container">
+                <p class="fs-2">No posts found</p>
+                @if (Auth.Autherized)
+                {
+                    <a class="fs-5" asp-action="CreatePost" asp-controller="Posts" asp-route-categoryId="@Model.CategoryId">Create new post</a>
+                }
+            </div>
+        }
+    </div>
+</div>

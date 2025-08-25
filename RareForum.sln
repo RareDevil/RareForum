@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RareForum", "RareForum\RareForum.csproj", "{F86D5B26-7E0E-4A97-A330-D90A5E07A917}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F86D5B26-7E0E-4A97-A330-D90A5E07A917}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F86D5B26-7E0E-4A97-A330-D90A5E07A917}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F86D5B26-7E0E-4A97-A330-D90A5E07A917}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F86D5B26-7E0E-4A97-A330-D90A5E07A917}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
